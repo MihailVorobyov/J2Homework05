@@ -9,7 +9,7 @@ public class MyThreadClass {
 
 	public static void main(String[] args) {
 		method1();
-		method2(2);
+		method2(3);
 	}
 
 	public static void method1 () {
@@ -23,13 +23,23 @@ public class MyThreadClass {
 		long a = System.currentTimeMillis();
 
 		//4) Проходят по всему массиву и для каждой ячейки считают новое значение по формуле:
-		for (int i = 0; i < SIZE; i++) {
-			arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+//		for (int i = 0; i < SIZE; i++) {
+//			arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+//		}
+		MyThread thread = new MyThread(arr, 0, arr.length);
+		thread.start();
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
 		//5) Проверяется время окончания метода System.currentTimeMillis();
 		//6) В консоль выводится время работы:
 		System.out.println("1 поток: " + (System.currentTimeMillis() - a) + " мс");
+
+		// вывод для теста
+//		System.out.println("\n" + Arrays.toString(arr) + "\n");
 	}
 
 	public static void method2 (int numOfThreads) {
@@ -64,7 +74,7 @@ public class MyThreadClass {
 			fragmentedArray[i] = new float[length];
 			System.arraycopy(arr, start, fragmentedArray[i], 0, length);
 			start += length;
-			threads[i] = new MyThread(fragmentedArray[i]);
+			threads[i] = new MyThread(fragmentedArray[i], i,SIZE / numOfThreads);
 			threads[i].start();
 		}
 		for (Thread t : threads) {
@@ -83,6 +93,9 @@ public class MyThreadClass {
 
 		// выводим время выполнения
 		System.out.println(numOfThreads + " потока(ов): " + (System.currentTimeMillis() - a) + " мс");
+
+		// вывод для теста
+//		System.out.println("\n" + Arrays.toString(arr) + "\n");
 	}
 }
 
